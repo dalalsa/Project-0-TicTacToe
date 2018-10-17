@@ -14,34 +14,79 @@ $(document).ready(function() {
   var col = "col";
   var diagr1 = "diag1";
   var diagr2 = "diag2";
+  var againstComputer = false;
+  var availbleArray = [];
+  var getAvailableMovesCom;
+  // var getAvailableMovesCom = [];
+  function computerMove() {
+    var random1 = randomGene();
 
-  winningLine = [];
+    getAvailableMovesCom = getAvailableMoves();
+
+    for (var i = 0; i < getAvailableMovesCom.length; i++) {
+      if (getAvailableMovesCom[i] == random1) {
+        console.log(
+          "random number matched : " +
+            getAvailableMovesCom +
+            "random : " +
+            random1
+        );
+        var computerId = "#" + random1;
+        console.log("ggg ", computerId);
+
+        return computerId;
+      }
+    }
+    function randomGene() {
+      var random = Math.floor(Math.random() * 9 - 1);
+      return random;
+    }
+  }
+  function getAvailableMoves() {
+    //
+    var availableMoves = [];
+    for (var row = 0; row < 3; row++) {
+      for (var column = 0; column < 3; column++) {
+        if (grid[row][column] !== "X" && grid[row][column] !== "O") {
+          availableMoves.push(grid[row][column]);
+        }
+      }
+    }
+    console.log("availableMoves : ", availableMoves);
+    return availableMoves;
+  }
+
+  //emptyCells[random].textContent = mark;}
+
   var board_table =
     '<table cellpadding="0px" cellspacing="0px" align="center" border="0px" class="board"><tr id ="tr0"><td id="0"> </td><td id="1"> </td><td id="2"> </td></tr><tr id ="tr1"><td id="3"> </td><td id="4"> </td><td id="5"> </td></tr><tr id ="tr2"><td id="6"> </td><td id="7"> </td><td id="8"> </td></tr></table>';
   $("#board").html(board_table);
   var $cells = $("#board tr td");
   $cells.click(function() {
-    console.log("clicked", grid.length);
-    if (play) {
+    console.log("clickeddd", id);
+    if (play && $(this).text() == " ") {
       for (var i = 0; i < grid.length; i++) {
         var id = $(this).attr("id");
-        console.log(id, "lll");
         for (var j = 0; j < grid[i].length; j++) {
           if (grid[i][j] == id) {
             grid[i][j] = player;
             $(this).append(player);
-            console.log("clicked");
           }
         }
       }
-
-      console.log("winner issss ", results());
-
       player = nextTurn();
-
-      console.log("turn :", player);
     }
+    var cm1 = computerMove();
+    console.log("computer move:", cm1);
+    $(cm1).append(player);
+    player = nextTurn();
+    results();
   });
+
+  /////////////////////
+  function computerPlay() {
+    againstComputer = true;
+  }
   function userChoice(uc) {
     if (uc == "X") {
       player1 = "X";
@@ -78,7 +123,7 @@ $(document).ready(function() {
     if (checkForWinner(player2)) {
       myResults = checkForWinner(player2);
       drawLine(myResults.winningLineType, myResults.winningLineNum);
-      alert("winner  is O"), results, winningLine;
+      alert("winner  is O"), myResults.winningLineNum;
       play = false;
     }
     //check for rows
@@ -91,19 +136,19 @@ $(document).ready(function() {
       };
       //check the repeats
       function succession(line) {
-        console.log("return fast");
+        //console.log("return fast");
         if (line === symbol.repeat(3)) return true;
       }
       for (var i = 0; i < 3; i++) {
         line = grid[i].join("");
-        console.log("some here", line);
+        //console.log("some here", line);
         if (succession(line)) {
           my.result = symbol;
           my.winningLineType = row;
           my.winningLineNum = i;
           // my.winningLine = [[i, 0], [i, 1], [i, 2]];
           //my.line = i
-          console.log("success here rows line", my.result + "row : " + i); //works
+          //console.log("success here rows line", my.result + "row : " + i); //works
           return my;
         }
       }
@@ -118,7 +163,7 @@ $(document).ready(function() {
 
           my.winningLineNum = j;
           my.winningLineType = col;
-          alert("success col here col line " + j);
+          //alert("success col here col line " + j);
           // return { result, winningLine };
           return my;
         }
@@ -131,7 +176,7 @@ $(document).ready(function() {
         my.winningLineType = diagr1;
         my.winningLineNum = 1;
         my.winningLine = [[0, 0], [1, 1], [2, 2]];
-        console.log("dig1" + diagr1);
+        // console.log("dig1" + diagr1);
         //return { result, winningLine };
         return my;
       }
