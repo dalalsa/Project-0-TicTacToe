@@ -1,6 +1,6 @@
 $(document).ready(function() {
   console.log("XO Game");
-  var player = "X";
+
   var computer = "O";
   var turn = "X";
   var grid = [["0", "1", "2"], ["3", "4", "5"], ["6", "7", "8"]];
@@ -8,8 +8,10 @@ $(document).ready(function() {
   var play = true;
   var countX = 0;
   var line;
-  var player1 = "X";
-  var player2 = "O";
+
+  player1 = "X";
+  player2 = "O";
+  var player = player1;
   var row = "row";
   var col = "col";
   var diagr1 = "diag1";
@@ -17,43 +19,104 @@ $(document).ready(function() {
   var againstComputer = false;
   var availbleArray = [];
   var getAvailableMovesCom;
+  var move = 0;
+
   // var getAvailableMovesCom = [];
-  function computerMove() {
-    var random1 = randomGene();
 
-    getAvailableMovesCom = getAvailableMoves();
+  // // first hide the board and final screen
+  // $("#board").hide();
+  // $("#finalScreen").hide();
 
-    for (var i = 0; i < getAvailableMovesCom.length; i++) {
-      if (getAvailableMovesCom[i] == random1) {
-        console.log(
-          "random number matched : " +
-            getAvailableMovesCom +
-            "random : " +
-            random1
-        );
-        var computerId = "#" + random1;
-        console.log("ggg ", computerId);
+  // two click functions: human player picks X or O and board appears, choice section hides
+  // $("#x").click(function() {
+  //   userChoice("X");
 
-        return computerId;
-      }
+  //   $("#choice").hide();
+  //   $("#board").fadeTo("slow", 1);
+  // });
+
+  // $("#o").click(function() {
+  //   userChoice("O");
+  //   $("#choice").hide();
+  //   $("#board").fadeTo("slow", 1);
+  // });
+
+  //
+  // <div id="choice" class="row">
+  //   <div class="col">
+  //     <span class="xAndY" id="x">X</span> or <span class="xAndY" id="o">O</span> ?
+  //       </div>
+  // </div>
+
+  function endGame() {
+    if (move == 9) {
+      play = false;
+      alert("game over");
+      return true;
     }
-    function randomGene() {
-      var random = Math.floor(Math.random() * 9 - 1);
-      return random;
-    }
+    return false;
   }
-  function getAvailableMoves() {
-    //
-    var availableMoves = [];
-    for (var row = 0; row < 3; row++) {
-      for (var column = 0; column < 3; column++) {
-        if (grid[row][column] !== "X" && grid[row][column] !== "O") {
-          availableMoves.push(grid[row][column]);
+  function computerMove() {
+    if (!endGame()) {
+      function getAvailableMoves() {
+        //
+        var availableMoves = [];
+        for (var row = 0; row < 3; row++) {
+          for (var column = 0; column < 3; column++) {
+            if (grid[row][column] !== "O" && grid[row][column] !== "X") {
+              console.log("a$$$$$$$$$$$$$$$$$$$$$$$$$");
+              availableMoves.push(grid[row][column]);
+            }
+          }
+        }
+
+        return availableMoves;
+      }
+
+      function randomGene() {
+        var random = Math.floor(Math.random() * 10 - 1);
+        return random;
+      }
+      var random1 = randomGene();
+      //var getAvailableMovesCom = getAvailableMoves();
+      var availableMoves = [];
+      for (var row = 0; row < 3; row++) {
+        for (var column = 0; column < 3; column++) {
+          if (grid[row][column] !== "O") {
+            availableMoves.push(grid[row][column]);
+            console.log("availableMoves herefff  : ", grid[row][column]);
+          }
+        }
+      }
+      console.log("availableMoves 2  : ", availableMoves);
+      getAvailableMovesCom = getAvailableMoves();
+      var done = false;
+      while (!done) {
+        for (var i = 0; i < 9; i++) {
+          if (availableMoves[i] == random1) {
+            console.log(
+              "random number matched : " +
+                availableMoves +
+                "random : " +
+                random1
+            );
+            done = true;
+            var computerId = random1;
+
+            console.log("found match ", computerId);
+
+            return computerId;
+          } else {
+            if (!play) {
+              return;
+            } else {
+              random1 = randomGene();
+              console.log("not found match  cont search  ", computerId);
+            }
+          }
         }
       }
     }
-    console.log("availableMoves : ", availableMoves);
-    return availableMoves;
   }
 
   //emptyCells[random].textContent = mark;}
@@ -63,29 +126,58 @@ $(document).ready(function() {
   $("#board").html(board_table);
   var $cells = $("#board tr td");
   $cells.click(function() {
-    console.log("clickeddd", id);
-    if (play && $(this).text() == " ") {
+    console.log("clickeddd", player);
+
+    if ($(this).text() == " " && play) {
       for (var i = 0; i < grid.length; i++) {
         var id = $(this).attr("id");
         for (var j = 0; j < grid[i].length; j++) {
           if (grid[i][j] == id) {
             grid[i][j] = player;
             $(this).append(player);
+            move++;
           }
         }
       }
-      player = nextTurn();
     }
-    var cm1 = computerMove();
-    console.log("computer move:", cm1);
-    $(cm1).append(player);
-    player = nextTurn();
+    if (play) {
+      if (computerPlay()) {
+        player = nextTurn();
+        var cm1 = computerMove();
+        for (var i = 0; i < grid.length; i++) {
+          for (var j = 0; j < grid[i].length; j++) {
+            if (grid[i][j] == cm1) {
+              console.log("clickedhd", player);
+              grid[i][j] = player;
+              console.log("computer moove:", player);
+              $("#" + cm1).append(player);
+              player = nextTurn();
+              move++;
+            }
+          }
+        }
+      } else if (!computerPlay()) {
+        player = nextTurn();
+        //var cm1 = computerMove();
+        for (var i = 0; i < grid.length; i++) {
+          var id = $(this).attr("id");
+          for (var j = 0; j < grid[i].length; j++) {
+            if (grid[i][j] == id) {
+              grid[i][j] = player;
+              $(this).append(player);
+
+              move++;
+            }
+          }
+        }
+      }
+    }
     results();
   });
 
   /////////////////////
   function computerPlay() {
-    againstComputer = true;
+    return true;
   }
   function userChoice(uc) {
     if (uc == "X") {
@@ -104,6 +196,7 @@ $(document).ready(function() {
 
   function results() {
     var myResults = {};
+    endGame();
     if (checkForWinner(player1)) {
       myResults = checkForWinner(player1);
       console.log(myResults);
