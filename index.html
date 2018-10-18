@@ -9,15 +9,39 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
+  <script src="js/main2.js"></script>
 
 </head>
 
 <body>
+  <div class="container text-center">
+    <h1> Tic-tac-toe Game </h1>
+    <h3 id="textField">Select mode:</h3>
+    <div id="tableField">
+      <div id="modeField">
+        <div id="playerButton" class="ButtonGroup">
+          <button id="1Player" class="btn" value=1>1 Player</button>
+          <button id="2Player" class="btn" value=2>2 Player</button>
+        </div> <!-- End of 1 or 2 players -->
 
+        <div id="symbolChose">
+          <h2> Play as: </h2>
+          <div id="symbolChoseButton" class="ButtonGroup">
+            <button id="btnX" class="btn" value='X'>X Player</button>
+            <button id="btnO" class="btn" value='O'>O Player</button>
+          </div>
+        </div> <!-- End of symbol choose -->
+        <div id="levelChose">
+
+          <button id="startButton" class="btn btn-primary">Start Game</button>
+        </div> <!-- End Mode Field -->
+      </div>
+    </div>
+  </div>
   <div class="flex-wrap">
     <div class="flex">
       <div id="board"></div>
-
+      <div class="resetBtn"><button id="reset" class="btn" value='O'>Restart</button> </div>
       <div id="finalScreen" class="row">
         <div class="col">
           <div id="winner"></div>
@@ -27,12 +51,15 @@
       </div>
 
 
-      <script src="js/main2.js"></script>
+
+
       <main></main>
 
 
 
       <footer></footer>
+      <!-- Satart Screen-->
+
 </body>
 
 </html>

@@ -8,7 +8,6 @@ $(document).ready(function() {
   var play = true;
   var countX = 0;
   var line;
-
   player1 = "X";
   player2 = "O";
   var player = player1;
@@ -20,33 +19,50 @@ $(document).ready(function() {
   var availbleArray = [];
   var getAvailableMovesCom;
   var move = 0;
+  var computerPlay = 1;
+  //start buttons
+  $("#1Player").click(function() {
+    computerPlay = true;
+  });
+  $("#2Player").click(function() {
+    computerPlay = false;
+  });
+  $("btnX").click(function() {
+    player1 = "X";
+  });
+  $("btnO").click(function() {
+    player1 = "O";
+  });
+  // Button click function
+  function buttonClick() {
+    $(this)
+      .css("background-color", "#00796B")
+      .css("color", "white");
+    $(this)
+      .prevAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    $(this)
+      .nextAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    var object = $(this)
+      .parent()
+      .attr("id");
+    if (object == "playerButton") computerPlay = $(this).attr("value");
+    else if (object == "symbolChoseButton") mode.playas = $(this).attr("value");
+    else if (object == "levelChoseButton") mode.level = $(this).attr("value");
+    else console.log("Error!");
+  }
 
-  // var getAvailableMovesCom = [];
-
-  // // first hide the board and final screen
-  // $("#board").hide();
-  // $("#finalScreen").hide();
-
-  // two click functions: human player picks X or O and board appears, choice section hides
-  // $("#x").click(function() {
-  //   userChoice("X");
-
-  //   $("#choice").hide();
-  //   $("#board").fadeTo("slow", 1);
-  // });
-
-  // $("#o").click(function() {
-  //   userChoice("O");
-  //   $("#choice").hide();
-  //   $("#board").fadeTo("slow", 1);
-  // });
-
-  //
-  // <div id="choice" class="row">
-  //   <div class="col">
-  //     <span class="xAndY" id="x">X</span> or <span class="xAndY" id="o">O</span> ?
-  //       </div>
-  // </div>
+  //intro screen
+  $(function() {
+    $("div.ButtonGroup>button:first-child")
+      .css("background-color", "#00796B")
+      .css("color", "white"); // Set default color button
+    $("div.ButtonGroup>button").on("click", buttonClick); //Register event handler
+    $("#startButton").on("click", startgame);
+  });
 
   function endGame() {
     if (move == 9) {
@@ -56,6 +72,8 @@ $(document).ready(function() {
     }
     return false;
   }
+
+  ///////////------------------------ Computer Move ---------------------------/////////////
   function computerMove() {
     if (!endGame()) {
       function getAvailableMoves() {
@@ -64,7 +82,6 @@ $(document).ready(function() {
         for (var row = 0; row < 3; row++) {
           for (var column = 0; column < 3; column++) {
             if (grid[row][column] !== "O" && grid[row][column] !== "X") {
-              console.log("a$$$$$$$$$$$$$$$$$$$$$$$$$");
               availableMoves.push(grid[row][column]);
             }
           }
@@ -104,7 +121,6 @@ $(document).ready(function() {
             var computerId = random1;
 
             console.log("found match ", computerId);
-
             return computerId;
           } else {
             if (!play) {
@@ -119,66 +135,97 @@ $(document).ready(function() {
     }
   }
 
-  //emptyCells[random].textContent = mark;}
-
-  var board_table =
-    '<table cellpadding="0px" cellspacing="0px" align="center" border="0px" class="board"><tr id ="tr0"><td id="0"> </td><td id="1"> </td><td id="2"> </td></tr><tr id ="tr1"><td id="3"> </td><td id="4"> </td><td id="5"> </td></tr><tr id ="tr2"><td id="6"> </td><td id="7"> </td><td id="8"> </td></tr></table>';
-  $("#board").html(board_table);
-  var $cells = $("#board tr td");
-  $cells.click(function() {
-    console.log("clickeddd", player);
-
-    if ($(this).text() == " " && play) {
-      for (var i = 0; i < grid.length; i++) {
-        var id = $(this).attr("id");
-        for (var j = 0; j < grid[i].length; j++) {
-          if (grid[i][j] == id) {
-            grid[i][j] = player;
-            $(this).append(player);
-            move++;
-          }
-        }
-      }
-    }
-    if (play) {
-      if (computerPlay()) {
-        player = nextTurn();
-        var cm1 = computerMove();
-        for (var i = 0; i < grid.length; i++) {
-          for (var j = 0; j < grid[i].length; j++) {
-            if (grid[i][j] == cm1) {
-              console.log("clickedhd", player);
-              grid[i][j] = player;
-              console.log("computer moove:", player);
-              $("#" + cm1).append(player);
-              player = nextTurn();
-              move++;
-            }
-          }
-        }
-      } else if (!computerPlay()) {
-        player = nextTurn();
-        //var cm1 = computerMove();
+  // Start Game function
+  function startgame() {
+    $(".container").hide();
+    var board_table =
+      '<table cellpadding="0px" cellspacing="0px" align="center" border="0px" class="board"><tr id ="tr0"><td id="0"> </td><td id="1"> </td><td id="2"> </td></tr><tr id ="tr1"><td id="3"> </td><td id="4"> </td><td id="5"> </td></tr><tr id ="tr2"><td id="6"> </td><td id="7"> </td><td id="8"> </td></tr></table>';
+    $("#board").html(board_table);
+    var $cells = $("#board tr td");
+    $cells.click(function() {
+      console.log("clickeddd", player);
+      if ($(this).text() == " " && play) {
         for (var i = 0; i < grid.length; i++) {
           var id = $(this).attr("id");
           for (var j = 0; j < grid[i].length; j++) {
             if (grid[i][j] == id) {
               grid[i][j] = player;
               $(this).append(player);
-
               move++;
             }
           }
         }
       }
-    }
-    results();
-  });
+      if (play) {
+        if (computerPlay) {
+          player = nextTurn();
+          var cm1 = computerMove();
+          for (var i = 0; i < grid.length; i++) {
+            for (var j = 0; j < grid[i].length; j++) {
+              if (grid[i][j] == cm1) {
+                console.log("clickedhd", player);
+                grid[i][j] = player;
+                console.log("computer moove:", player);
+                $("#" + cm1).append(player);
+                player = nextTurn();
+                move++;
+              }
+            }
+          }
+        } else if (!computerPlay) {
+          player = nextTurn();
+          //var cm1 = computerMove();
+          for (var i = 0; i < grid.length; i++) {
+            var id = $(this).attr("id");
+            for (var j = 0; j < grid[i].length; j++) {
+              if (grid[i][j] == id) {
+                grid[i][j] = player;
+                $(this).append(player);
 
-  /////////////////////
-  function computerPlay() {
-    return true;
+                move++;
+              }
+            }
+          }
+        }
+      }
+      results();
+    });
   }
+
+  //   if (mode.playas == 'X') {
+  //     player1 = 'X'; player2 = 'O'; symbolFlag = true;
+  //   }
+  //   else if (mode.playas == 'O') {
+  //     player1 = 'O'; player2 = 'X'; symbolFlag = false;
+  //   }
+  //   else console.log('Error!');
+  //   // Resigter event handler for each td
+  //   $("td").on('mouseover', MouseOver).on('mouseout', MouseOut).on('click', MouseClick);
+  //   $("#restartButton").on('click', restartGame);
+  // }
+  // Button click function
+  function buttonClick() {
+    $(this)
+      .css("background-color", "#00796B")
+      .css("color", "white");
+    $(this)
+      .prevAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    $(this)
+      .nextAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    var object = $(this)
+      .parent()
+      .attr("id");
+    // if (object == "playerButton") mode.noplayer = $(this).attr("value");
+    // else if (object == "symbolChoseButton") mode.playas = $(this).attr("value");
+    // else if (object == "levelChoseButton") mode.level = $(this).attr("value");
+    // else console.log("Error!");
+  }
+  /////////////////////
+
   function userChoice(uc) {
     if (uc == "X") {
       player1 = "X";
@@ -188,12 +235,12 @@ $(document).ready(function() {
       player2 = "X";
     }
   }
-
+  //change the turn
   function nextTurn() {
     turn = turn == player1 ? player2 : player1;
     return turn;
   }
-
+  //results function
   function results() {
     var myResults = {};
     endGame();
@@ -219,7 +266,7 @@ $(document).ready(function() {
       alert("winner  is O"), myResults.winningLineNum;
       play = false;
     }
-    //check for rows
+
     function checkForWinner(symbol) {
       my = {
         result: undefined,
@@ -229,24 +276,20 @@ $(document).ready(function() {
       };
       //check the repeats
       function succession(line) {
-        //console.log("return fast");
         if (line === symbol.repeat(3)) return true;
       }
+      //check for rows
       for (var i = 0; i < 3; i++) {
         line = grid[i].join("");
-        //console.log("some here", line);
         if (succession(line)) {
           my.result = symbol;
           my.winningLineType = row;
           my.winningLineNum = i;
           // my.winningLine = [[i, 0], [i, 1], [i, 2]];
-          //my.line = i
-          //console.log("success here rows line", my.result + "row : " + i); //works
           return my;
         }
       }
       //check for columns
-
       for (var j = 0; j < 3; j++) {
         var column = [grid[0][j], grid[1][j], grid[2][j]];
         line = column.join("");
@@ -286,7 +329,7 @@ $(document).ready(function() {
       }
     }
   }
-
+  //function to show the winning line
   function drawLine(lineType, lineNumber) {
     var $rows = $("#board tr");
     if (lineType == "row") {
@@ -318,5 +361,9 @@ $(document).ready(function() {
     if (lineType == "diag2") {
       $("#board tr #2,#4,#6").addClass("green");
     }
+  }
+
+  function restartGame() {
+    location.reload();
   }
 });

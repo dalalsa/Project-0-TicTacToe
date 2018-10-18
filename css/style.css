@@ -2,7 +2,26 @@
   margin: 0;
   padding: 0;
 }
+html {
+  background-color: rgb(119, 112, 112);
+  height: 100%;
+  font-family: "Noto Sans", sans-serif;
+}
 
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+}
+
+.flex-wrap {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -36,13 +55,70 @@ table {
 .o {
   background-color: bisque;
 }
+.container {
+  width: 50%;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  /* Makes all direct children flex-items */
+  align-items: center;
+  /* Centers everything vertically */
+  flex-direction: column;
+  /* Stack all of the items on top of each other */
+  justify-content: center;
+  /* Centers everything horizontally */
+}
+.resetBtn {
+  width: 50%;
+  height: 10%;
+  margin-bottom: 10px;
+  display: flex;
+  /* Makes all direct children flex-items */
+  align-items: baseline;
+  /* Centers everything vertically */
+  flex-direction: column;
+  /* Stack all of the items on top of each other */
+  justify-content: baseline;
+  /* Centers everything horizontally */
+}
+#textField {
+  margin-bottom: 20px;
+}
+table {
+  margin: auto;
+}
+.ButtonGroup {
+  border: 4px #004d40 solid;
+  margin: auto;
+  border-radius: 10px;
+  margin: 10px auto 10px auto;
+  padding: 5px;
+}
+#playerButton {
+  width: 230px;
+}
+#symbolChoseButton {
+  width: 230px;
+}
+#levelChoseButton {
+  width: 295px;
+}
+.ButtonGroup > button {
+  background-color: inherit;
+  color: inherit;
+  border-radius: 10px;
+  font-size: 20px;
+}
 
+#textField {
+  margin-bottom: 20px;
+}
 table.board {
   border: px solid green;
   height: 600px;
   width: 600px;
-
   border-style: none;
+  margin: auto 50px;
 }
 
 body {
@@ -100,25 +176,6 @@ td {
   text-decoration: none;
 }
 
-html {
-  background-color: rgb(119, 112, 112);
-  height: 100%;
-  font-family: "Noto Sans", sans-serif;
-}
-
-body {
-  height: 100%;
-  margin: 0;
-}
-
-.flex-wrap {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 #board tr:first-child td {
   border-top: 0;
 }
