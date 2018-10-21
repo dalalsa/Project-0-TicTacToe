@@ -6,11 +6,11 @@
 
 # My Game Project
 
-![super cool oryx pic](https://www.diana-hunting.com/app/webroot/_resized/uploads/vildtarter/oryx--gemsbok-992532a43a6fda62b1c220e8fd0c42d5.jpg)
+![super cool oryx pic](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYgsMHxVTa96tUrZ9lIKnfls8nOLyTqqB-kiHHduHxmoTWgHhm)
 
 ## Challenges:
 
-working on the logic side and get everything done and update the view side
+working on the logic side and get everything done then update the view side
 
 #### This was hard code:
 
@@ -32,9 +32,7 @@ I made XO game using HTML, CSS, javaScript.
 
 ## Approach:
 
-The main process is to compare the Id div with the 2D array values. If they are matched then the player name will save into the array. In addition, there is a counter for each player.
-add the plyers moves to a 2d array
-then checking for winners every time
+I have main function for the game every time will allow the player1 to
 
 ## Github link:
 
@@ -42,4 +40,4 @@ then checking for winners every time
 
 ## What's next:
 
-working onِ Adding AI and other features,adding animation effacts
+working onِ Adding AI and other features,adding animation effacts,improving the controls buttons

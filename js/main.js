@@ -1,153 +1,403 @@
 $(document).ready(function() {
-  var move = 1;
+  console.log("XO Game");
+
+  var computer = "O";
+  var turn = "X";
+  var grid = [["0", "1", "2"], ["3", "4", "5"], ["6", "7", "8"]];
+  var gameOver = false;
   var play = true;
 
-  //2:draw the board
-  //    var gameArray = {row:[a,b,c],[d,e,f],[g,h,i],
-  //     column:[a,d,g,[b,e,h],[c,f,i],
-  //     dig:[a,e,i],[c,e,g]};
-  //    function checkForWinner() {
-  //     if ($("#board tr td").hasClass("x")){
-  //         console.log("winner is X")
-  //     }
+  var line;
+  player1 = "X";
+  player2 = "O";
+  var player = player1;
+  var row = "row";
+  var col = "col";
+  var diagr1 = "diag1";
+  var diagr2 = "diag2";
+  var againstComputer = false;
+  var availbleArray = [];
+  var getAvailableMovesCom;
+  var move = 0;
+  var computerPlay = 1;
+  tie = false;
 
-  // }
-  // console.log(checkForWinner())
-
-  //decide who  is turn
-
-  //1:turns
-  var userChoose = "X";
-  var computerChoose = "O";
-  $cells = $("#board tr td");
-  function chooseSymple(uc) {
-    if (uc === "X") {
-      userChoose = "X";
-    } else if (uc === "O") {
-      userChoose = "O";
-    }
-    return userChoose;
+  var currentValue = sessionStorage.getItem("scoreX");
+  if (currentValue === null) {
+    currentValue = sessionStorage.setItem("scoreX", 0);
   }
-  $cells.click(function() {
-    if ($(this).text() == "" && play) {
-      if (move % 2 == 1) {
-        $(this).append(userChoose);
-        console.log("ok", $("#board tr .row3").text());
-        $(this).addClass("x");
-        move++;
-      } else {
-        $(this).append(computerChoose);
-        $(this).addClass("o");
-        move++;
+  console.log(currentValue);
+  $("#scoreX").text(currentValue);
+  var currentValue2 = sessionStorage.getItem("scoreO");
+  if (currentValue2 === null) {
+    currentValue2 = sessionStorage.setItem("scoreO", 0);
+  }
+  console.log(currentValue);
+  $("#scoreO").text(currentValue2);
+
+  //start screen controls
+  $("#1Player").click(function() {
+    computerPlay = true;
+  });
+  $("#2Player").click(function() {
+    computerPlay = false;
+  });
+  $("#btnX").click(function() {
+    player1 = "X";
+  });
+  $("#btnO").click(function() {
+    player1 = "O";
+  });
+
+  // Button click function
+  function buttonClick() {
+    $(this)
+      .css("background-color", "#00796B")
+      .css("color", "white");
+    $(this)
+      .prevAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    $(this)
+      .nextAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    var object = $(this)
+      .parent()
+      .attr("id");
+    if (object == "playerButton") computerPlay = $(this).attr("value");
+    else if (object == "symbolChoseButton") mode.playas = $(this).attr("value");
+    else if (object == "levelChoseButton") mode.level = $(this).attr("value");
+    else console.log("Error!");
+  }
+
+  //intro screen
+  $(function() {
+    $("div.ButtonGroup>button:first-child")
+      .css("background-color", "#00796B")
+      .css("color", "white"); // Set default color button
+    $("div.ButtonGroup>button").on("click", buttonClick); //Register event handler
+    $("#startButton").on("click", startgame);
+  });
+
+  function endGame() {
+    if (move == 9) {
+      return true;
+    }
+    return false;
+  }
+
+  ///////////------------------------ Computer Move ---------------------------/////////////
+  function computerMove() {
+    if (!endGame()) {
+      function getAvailableMoves() {
+        //
+        var availableMoves = [];
+        for (var row = 0; row < 3; row++) {
+          for (var column = 0; column < 3; column++) {
+            if (grid[row][column] !== "O" && grid[row][column] !== "X") {
+              availableMoves.push(grid[row][column]);
+            }
+          }
+        }
+
+        return availableMoves;
+      }
+
+      function randomGene() {
+        var random = Math.floor(Math.random() * 10 - 1);
+        return random;
+      }
+      var random1 = randomGene();
+      //var getAvailableMovesCom = getAvailableMoves();
+      var availableMoves = [];
+      for (var row = 0; row < 3; row++) {
+        for (var column = 0; column < 3; column++) {
+          if (grid[row][column] !== "O") {
+            availableMoves.push(grid[row][column]);
+            console.log("availableMoves herefff  : ", grid[row][column]);
+          }
+        }
+      }
+      console.log("availableMoves 2  : ", availableMoves);
+      getAvailableMovesCom = getAvailableMoves();
+      var done = false;
+      while (!done) {
+        for (var i = 0; i < 9; i++) {
+          if (availableMoves[i] == random1) {
+            console.log(
+              "random number matched : " +
+                availableMoves +
+                "random : " +
+                random1
+            );
+            done = true;
+            var computerId = random1;
+
+            console.log("found match ", computerId);
+            return computerId;
+          } else {
+            if (!play) {
+              return;
+            } else {
+              random1 = randomGene();
+              console.log("not found match  cont search  ", computerId);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // The Game function
+  function startgame() {
+    $(".container").hide();
+    var board_table =
+      '<table cellpadding="0px" cellspacing="0px" align="center" border="0px" class="board"><tr id ="tr0"><td id="0"> </td><td id="1"> </td><td id="2"> </td></tr><tr id ="tr1"><td id="3"> </td><td id="4"> </td><td id="5"> </td></tr><tr id ="tr2"><td id="6"> </td><td id="7"> </td><td id="8"> </td></tr></table>';
+    $("#board").html(board_table);
+    var $cells = $("#board tr td");
+    $cells.click(function() {
+      console.log("clickeddd", player);
+
+      if ($(this).text() == " " && play) {
+        for (var i = 0; i < grid.length; i++) {
+          var id = $(this).attr("id");
+          for (var j = 0; j < grid[i].length; j++) {
+            if (grid[i][j] == id) {
+              grid[i][j] = player;
+              $(this).append(player);
+              move++;
+            }
+          }
+        }
+      }
+      if (play) {
+        if (computerPlay) {
+          player = nextTurn();
+          var cm1 = computerMove();
+          for (var i = 0; i < grid.length; i++) {
+            for (var j = 0; j < grid[i].length; j++) {
+              if (grid[i][j] == cm1) {
+                console.log("clickedhd", player);
+                grid[i][j] = player;
+                console.log("computer moove:", player);
+                $("#" + cm1).append(player);
+                player = nextTurn();
+                move++;
+              }
+            }
+          }
+        } else if (!computerPlay) {
+          player = nextTurn();
+          //var cm1 = computerMove();
+          for (var i = 0; i < grid.length; i++) {
+            var id = $(this).attr("id");
+            for (var j = 0; j < grid[i].length; j++) {
+              if (grid[i][j] == id) {
+                grid[i][j] = player;
+                $(this).append(player);
+
+                move++;
+              }
+            }
+          }
+        }
+      }
+
+      results();
+    });
+  }
+
+  //   if (mode.playas == 'X') {
+  //     player1 = 'X'; player2 = 'O'; symbolFlag = true;
+  //   }
+  //   else if (mode.playas == 'O') {
+  //     player1 = 'O'; player2 = 'X'; symbolFlag = false;
+  //   }
+  //   else console.log('Error!');
+  //   // Resigter event handler for each td
+  //   $("td").on('mouseover', MouseOver).on('mouseout', MouseOut).on('click', MouseClick);
+  //   $("#restartButton").on('click', restartGame);
+  // }
+  // Button click function
+  function buttonClick() {
+    $(this)
+      .css("background-color", "#00796B")
+      .css("color", "white");
+    $(this)
+      .prevAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    $(this)
+      .nextAll()
+      .css("background-color", "inherit")
+      .css("color", "inherit");
+    var object = $(this)
+      .parent()
+      .attr("id");
+    // if (object == "playerButton") mode.noplayer = $(this).attr("value");
+    // else if (object == "symbolChoseButton") mode.playas = $(this).attr("value");
+    // else if (object == "levelChoseButton") mode.level = $(this).attr("value");
+    // else console.log("Error!");
+  }
+  /////////////////////
+
+  function userChoice(uc) {
+    if (uc == "X") {
+      player1 = "X";
+      player2 = "O";
+    } else if (uc == "O") {
+      player1 = "O";
+      player2 = "X";
+    }
+  }
+  //change the turn
+  function nextTurn() {
+    turn = turn == player1 ? player2 : player1;
+    return turn;
+  }
+  //results function
+  function results() {
+    var myResults = {};
+
+    if (checkForWinner(player1)) {
+      myResults = checkForWinner(player1);
+      console.log(myResults);
+      drawLine(myResults.winningLineType, myResults.winningLineNum);
+      play = false;
+      score("scoreX", $("#scoreX"));
+      alert("winner is " + player1);
+    } else if (checkForWinner(player2)) {
+      myResults = checkForWinner(player2);
+      drawLine(myResults.winningLineType, myResults.winningLineNum);
+      //score("player1", player1);
+
+      play = false;
+      score("scoreO", $("#scoreO"));
+      alert("winner  is " + player2);
+    } else {
+      if (move == 9) {
+        alert("it is a tie!");
+        // tie = true;
+      }
+    }
+    //check for winners function
+    function checkForWinner(symbol) {
+      my = {
+        result: undefined,
+        winningLine: undefined,
+        winningLineType: undefined,
+        winningLineNum: undefined
+      };
+      //check the repeats
+      function succession(line) {
+        if (line === symbol.repeat(3)) return true;
+      }
+      //check for rows
+      for (var i = 0; i < 3; i++) {
+        line = grid[i].join("");
+        if (succession(line)) {
+          my.result = symbol;
+          my.winningLineType = row;
+          my.winningLineNum = i;
+          // my.winningLine = [[i, 0], [i, 1], [i, 2]];
+          return my;
+        }
+      }
+      //check for columns
+      for (var j = 0; j < 3; j++) {
+        var column = [grid[0][j], grid[1][j], grid[2][j]];
+        line = column.join("");
+        if (succession(line)) {
+          my.result = symbol;
+
+          my.winningLineNum = j;
+          my.winningLineType = col;
+
+          return my;
+        }
+      }
+      //check for diag
+      var diag1 = [grid[0][0], grid[1][1], grid[2][2]];
+      line = diag1.join("");
+      if (succession(line)) {
+        my.result = symbol;
+        my.winningLineType = diagr1;
+        my.winningLineNum = 1;
+        my.winningLine = [[0, 0], [1, 1], [2, 2]];
+
+        return my;
+      }
+
+      var diag2 = [grid[0][2], grid[1][1], grid[2][0]];
+      line = diag2.join("");
+      if (succession(line)) {
+        my.result = symbol;
+        my.winningLineType = diagr2;
+        my.winningLineNum = 2;
+
+        return my;
+      }
+    }
+    return false;
+  }
+  //function to draw the winning line
+  function drawLine(lineType, lineNumber) {
+    var $rows = $("#board tr");
+    if (lineType == "row") {
+      if (lineNumber === 0) {
+        $("#board #tr0").addClass("winningLine");
+      }
+      if (lineNumber === 1) {
+        $("#board #tr1").addClass("winningLine");
+      }
+      if (lineNumber === 2) {
+        $("#board #tr2").addClass("winningLine");
       }
     }
 
-    if (checkForWinner() === "X" || checkForWinner() === "O") {
-      console.log("wineer", checkForWinner());
-
-      play = false;
+    if (lineType == "col") {
+      if (lineNumber === 0) {
+        $("#board tr #0,#3,#6").addClass("winningLine");
+      }
+      if (lineNumber === 1) {
+        $("#board tr #1,#4,#7").addClass("winningLine");
+      }
+      if (lineNumber === 2) {
+        $("#board tr #2,#5,#8").addClass("winningLine");
+      }
     }
+    if (lineType == "diag1") {
+      $("#board tr #0,#4,#8").addClass("winningLine");
+    }
+    if (lineType == "diag2") {
+      $("#board tr #2,#4,#6").addClass("winningLine");
+    }
+  }
+
+  function restartGame() {
+    location.reload();
+  }
+
+  //replay
+  $("#reset").on("click", function() {
+    //player1:X
+    currentValue = sessionStorage.getItem("scoreX");
+    console.log(currentValue);
+    $("#scoreX").text(currentValue);
+    //player2:O
+    currentValue = sessionStorage.getItem("scoreO");
+    console.log(currentValue);
+    $("#scoreO").text(currentValue);
+    // sessionStorage.clear();
+    location.reload();
   });
 
-  //2:check for winners and return winner
-  var winner;
-  function checkForWinner() {
-    var case1 = $("#board tr .row1.x").text().length;
-    var case2 = $("#board tr .row2.x").text().length;
-    var case3 = $("#board tr .row3.x").text().length;
-    var case4 = $("#board tr .col1.x").text().length;
-    var case5 = $("#board tr .col2.x").text().length;
-    var case6 = $("#board tr .col3.x").text().length;
-
-    ///
-    var case7 = $("#board tr .row1.o").text().length;
-    var case8 = $("#board tr .row2.o").text().length;
-    var case9 = $("#board tr .row3.o").text().length;
-    var case10 = $("#board tr .col1.o").text().length;
-    var case11 = $("#board tr .col2.o").text().length;
-    var case12 = $("#board tr .col3.o").text().length;
-    if (case1 || case2 || case3 || case4 || case5 || case6 === 3) {
-      winner = "x";
-      console.log("hhhhh", winner);
-      return winner;
-    }
-    if (case7 || case8 || case9 || case10 || case11 || case12 === 3) {
-      winner = "o";
-      console.log("hhhhh", winner);
-      return winner;
-    }
-  }
-
-  function checkForWinner() {
-    // var cell1 = $("#board tr:nth-child(1) td:nth-child(1)").text();
-    // var cell2 = $("#board tr:nth-child(1) td:nth-child(2)").text();
-    // var cell3 = $("#board tr:nth-child(1) td:nth-child(3)").text();
-    // var cell4 = $("#board tr:nth-child(2) td:nth-child(1)").text();
-    // var cell5 = $("#board tr:nth-child(2) td:nth-child(2)").text();
-    // var cell6 = $("#board tr:nth-child(2) td:nth-child(3)").text();
-    // var cell7 = $("#board tr:nth-child(3) td:nth-child(1)").text();
-    // var cell8 = $("#board tr:nth-child(3) td:nth-child(2)").text();
-    // var cell9 = $("#board tr:nth-child(3) td:nth-child(3)").text();
-    // // check rows
-    // if      ((cell1==cell2) && (cell2==cell3)) { return cell3; }
-    // else if ((cell4==cell5) && (cell5==cell6)) { return cell6; }
-    // else if ((cell7==cell8) && (cell8==cell9)) { return cell9; }
-    // // check columns
-    // else if ((cell1==cell4) && (cell4==cell7)) { return cell7; }
-    // else if ((cell2==cell5) && (cell5==cell8)) { return cell8; }
-    // else if ((cell3==cell6) && (cell6==cell9)) { return cell9; }
-    // // check diagonals
-    // else if ((cell1==cell5) && (cell5==cell9)) { return cell9; }
-    // else if ((cell3==cell5) && (cell5==cell7)) { return cell7; }
-    // // no winner
-    // return -1;
+  function score(key, output) {
+    var current = sessionStorage.getItem(key);
+    current = parseInt(current);
+    var addedVakue = current + 1;
+    sessionStorage.setItem(key, addedVakue);
+    output.text(addedVakue);
   }
 });
-
-{
-  /* <table id='board'>
-<tr >
-  <td class = 'row1'></td><td class = 'row1'></td><td class = 'row1'></td>
-</tr>
-<tr>
-  <td class = 'row2'></td><td class = 'row2'></td><td class = 'row2'></td>
-</tr>
-<tr>
-  <td class = 'row3' ></td><td class = 'row3'></td><td class = 'row3'></td>
-</tr>
-</table> */
-}
-
-//   if (
-//     grid[i][0] == grid[i][1] &&
-//     grid[i][1] == grid[i][2] &&
-//     grid[i][0] != " "
-//   ) {
-//     return true;
-//   }
-//   if (
-//     grid[0][i] == grid[1][i] &&
-//     grid[1][i] == grid[2][i] &&
-//     grid[0][i] != " "
-//   ) {
-//     return true;
-//   }
-
-//   if (
-//     grid[0][0] == grid[1][1] &&
-//     grid[1][1] == grid[2][2] &&
-//     grid[0][0] != " "
-//   ) {
-//     return true;
-//   }
-
-//   if (
-//     grid[0][2] == grid[1][1] &&
-//     grid[1][1] == grid[2][0] &&
-//     grid[0][2] != " "
-//   ) {
-//     return true;
-//   }
-// }
-
-//return false;
